@@ -1,4 +1,4 @@
-from constants import REGISTER_ENDPOINT, BASE_URL
+from constants import REGISTER_ENDPOINT, BASE_URL, LOGIN_ENDPOINT
 from custom_requester.custom_requester import CustomRequester
 
 class AuthAPI(CustomRequester):
@@ -22,7 +22,7 @@ class AuthAPI(CustomRequester):
             expected_status=expected_status
         )
 
-    def login_user(self, login_data, expected_status=201):
+    def login_user(self, login_data, expected_status=200):
         """
         Авторизация пользователя.
         :param login_data: Данные для логина.
@@ -41,10 +41,12 @@ class AuthAPI(CustomRequester):
             "password": user_creds[1]
         }
 
-        response = self.login_user(login_data).json()
-        if "accessToken" not in response:
+        data = self.login_user(login_data, expected_status=200).json()
+
+        if "accessToken" not in data:
             raise KeyError("token is missing")
 
-        token = response["accessToken"]
-        self._update_session_headers(**{"Authorization": f"Bearer {token}"})
+        token = data["accessToken"]
+        self._update_session_headers(Authorization=f"Bearer {token}")
+        return token
 

@@ -38,3 +38,32 @@ class DataGenerator:
         random.shuffle(password)
 
         return ''.join(password)
+
+    @staticmethod
+    def generate_random_movie():
+        """
+        Генерация фильма
+        :return:
+        """
+        data = {
+            "name": faker.sentence(nb_words=2).rstrip("."),
+            "imageUrl": "https://image.url",
+            "price": faker.random_int(100, 400),
+            "description": faker.text(max_nb_chars=10),
+            "location": random.choice(["MSK", "SPB"]),
+            "published": True,
+            "genreId": 1
+        }
+        return data
+
+    @staticmethod
+    def generate_random_patch_data():
+        """
+        Генерация рандомных данных для patch запроса
+        """
+        data = {
+            "name": faker.sentence(nb_words=2).rstrip("."),
+            "price": faker.random_int(100, 400),
+            "description": faker.text(max_nb_chars=10),
+        }
+        return data

@@ -43,21 +43,21 @@ def test_user():
         "roles": ["USER"]
     }
 
-# @pytest.fixture(scope="session")
-# def registered_user(requester, test_user):
-#     """
-#     Фикстура для регистрации и получения данных зарегистрированного пользователя.
-#     """
-#     response = requester.send_request(
-#         method="POST",
-#         endpoint=REGISTER_ENDPOINT,
-#         data=test_user,
-#         expected_status=201
-#     )
-#     response_data = response.json()
-#     registered_user = test_user.copy()
-#     registered_user["id"] = response_data["id"]
-#     return registered_user
+@pytest.fixture(scope="session")
+def registered_user(requester, test_user):
+    """
+    Фикстура для регистрации и получения данных зарегистрированного пользователя.
+    """
+    response = requester.send_request(
+        method="POST",
+        endpoint=REGISTER_ENDPOINT,
+        data=test_user,
+        expected_status=201
+    )
+    response_data = response.json()
+    registered_user = test_user.copy()
+    registered_user["id"] = response_data["id"]
+    return registered_user
 
 @pytest.fixture(scope="session")
 def requester():
@@ -66,4 +66,31 @@ def requester():
     """
     session = requests.Session()
     return CustomRequester(session=session, base_url=BASE_URL)
+
+@pytest.fixture
+def movie_payload():
+    """
+    Генерирует случайный фильм через DataGenerator
+    """
+    from utils.data_generator import DataGenerator
+    return DataGenerator.generate_random_movie()
+
+@pytest.fixture(scope="session")
+def admin_auth(api_manager):
+    """
+    Логинится под кредами супер-админа и кладет токен в headers сессии
+    """
+    creds = ("api1@gmail.com", "asdqwe123Q")
+    token = api_manager.auth_api.authenticate(creds)
+    assert token, "Не удалось получить токен"
+    return token
+
+@pytest.fixture
+def patch_movie_payload():
+    """
+    Генерирует случайный patch
+    """
+    from utils.data_generator import DataGenerator
+    return DataGenerator.generate_random_patch_data()
+
 
