@@ -75,6 +75,36 @@ def movie_payload():
     from utils.data_generator import DataGenerator
     return DataGenerator.generate_random_movie()
 
+@pytest.fixture
+def created_movie(api_manager, admin_auth, movie_payload):
+    resp = api_manager.movies_api.create_movie(movie_payload)
+    assert resp.status_code == 201
+    movie = resp.json()
+
+    yield movie # movie["id"], movie["name"], ...
+
+    # очистка
+    api_manager.movies_api.delete_movie(movie["id"], expected_status=200)
+
+@pytest.fixture
+def create_movie_for_delete(api_manager, admin_auth, movie_payload):
+    response = api_manager.movies_api.create_movie(movie_payload)
+    assert response.status_code == 201
+    return response.json()
+
+@pytest.fixture
+def existing_movie(api_manager, admin_auth, movie_payload):
+    response = api_manager.movies_api.create_movie(movie_payload)
+    assert response.status_code == 201
+
+    movie = response.json() #тянем body с апи
+    used_movie_payload = movie_payload # тут исходный payload
+
+    yield movie, used_movie_payload
+
+    # очистка
+    api_manager.movies_api.delete_movie(movie["id"], expected_status=200)
+
 @pytest.fixture(scope="session")
 def admin_auth(api_manager):
     """

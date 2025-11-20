@@ -47,5 +47,5 @@ class MoviesAPI(CustomRequester):
             expected_status=expected_status
         )
 
-    def patch_movie(self, movie_id: dict, expected_status=200):
-        return self.send_request("PATCH", endpoint=MOVIES_ID_ENDPOINT.format(id=movie_id),)
+    def patch_movie(self, movie_id: dict, patch_data: dict, expected_status=200):
+        return self.send_request("PATCH", endpoint=MOVIES_ID_ENDPOINT.format(id=movie_id), data=patch_data, expected_status=expected_status)

@@ -41,7 +41,13 @@ class AuthAPI(CustomRequester):
             "password": user_creds[1]
         }
 
-        data = self.login_user(login_data, expected_status=200).json()
+        # тут костыль потому что бек мне отвечал то 200, то 201
+        try:
+            # типа правильно - 200
+            data = self.login_user(login_data, expected_status=200).json()
+        except ValueError:
+            # бэк может вернуть 201, тогда
+            data = self.login_user(login_data, expected_status=200).json()
 
         if "accessToken" not in data:
             raise KeyError("token is missing")
