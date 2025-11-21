@@ -9,7 +9,7 @@ class TestMoviesAPI:
         # проверка структуры ответа
         body = response.json()
         assert isinstance(body, dict), "Ответ должен быть словарем"
-        assert "movies" in body , "В ответе должно быть поле 'movies'"
+        assert "movies" in body, "В ответе должно быть поле 'movies'"
         assert isinstance(body["movies"], list), "'movies' должен быть списком "
 
     def test_post_movie(self, api_manager, admin_auth, movie_payload):
@@ -42,7 +42,7 @@ class TestMoviesAPI:
         assert body["name"] == create_movie_for_delete["name"]
 
     def test_patch_by_id(self, api_manager, admin_auth, created_movie, patch_movie_payload):
-        # Сначала создать фильм, юзаем фикстуру
+        #  Сначала создать фильм, юзаем фикстуру
         movie_id = created_movie["id"]
 
         resp = api_manager.movies_api.patch_movie(movie_id, patch_movie_payload)
@@ -151,7 +151,6 @@ class TestGetByIdNegative:
     def test_get_non_exist_id(self, api_manager):
         response = api_manager.movies_api.get_movie_by_id(999777666, expected_status=404)
         assert response.status_code == 404, f"Ожидался ответ 404, получен {response.status_code}"
-        body = response.json()
 
     def test_get_wrong_type_id(self, api_manager):
         response = api_manager.movies_api.get_movie_by_id("that's not id", expected_status=500)
@@ -163,7 +162,7 @@ class TestDeleteNegative:
         assert del_response.status_code == 404, f"Ожидался ответ 404, получен {del_response.status_code}"
 
     def test_delete_without_auth(self, api_manager):
-        del_response = api_manager.movies_api.delete_movie(movie_id=1, expected_status=401)
+        del_response = api_manager.movies_api.delete_movie(movie_id=9999999, expected_status=401)
         assert del_response.status_code == 401, f"Ожидался ответ 401, получен {del_response.status_code}"
 
 class TestPatchNegative:
@@ -171,9 +170,12 @@ class TestPatchNegative:
         patch_movie = api_manager.movies_api.patch_movie(movie_id=999777666, patch_data=patch_movie_payload, expected_status=404)
         assert patch_movie.status_code == 404, f"Ожидался ответ 404, получен {patch_movie.status_code}"
 
-    def test_patch_invalid_data(self, api_manager, admin_auth, patch_movie_payload):
+    def test_patch_invalid_data(self, api_manager, admin_auth, created_movie, patch_movie_payload):
+        movie_id = created_movie["id"]
         bad_data = patch_movie_payload.copy()
         bad_data["price"] = "HL3 TODAY"
-        patch_movie_payload = api_manager.movies_api.patch_movie(movie_id=1, patch_data=bad_data, expected_status=400)
-        assert patch_movie_payload.status_code == 400, f"Ожидался ответ 400, получен {patch_movie_payload.status_code}"
+
+        response = api_manager.movies_api.patch_movie(movie_id=movie_id, patch_data=bad_data, expected_status=400)
+        assert response.status_code == 400, f"Ожидался ответ 400, получен {response.status_code}"
+
 

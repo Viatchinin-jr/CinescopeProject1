@@ -97,8 +97,8 @@ def existing_movie(api_manager, admin_auth, movie_payload):
     response = api_manager.movies_api.create_movie(movie_payload)
     assert response.status_code == 201
 
-    movie = response.json() #тянем body с апи
-    used_movie_payload = movie_payload # тут исходный payload
+    movie = response.json() # тянем body с апи
+    used_movie_payload = movie_payload.copy() # тут исходный payload
 
     yield movie, used_movie_payload
 
