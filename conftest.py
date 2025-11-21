@@ -2,10 +2,10 @@ from faker import Faker
 import pytest
 import requests
 from API.api_manager import ApiManager
-from constants import BASE_URL, REGISTER_ENDPOINT, LOGIN_ENDPOINT
+from constants import BASE_URL, REGISTER_ENDPOINT
 from custom_requester.custom_requester import CustomRequester
 from utils.data_generator import DataGenerator
-from API.auth_api import AuthAPI
+
 
 
 faker = Faker()
@@ -72,7 +72,6 @@ def movie_payload():
     """
     Генерирует случайный фильм через DataGenerator
     """
-    from utils.data_generator import DataGenerator
     return DataGenerator.generate_random_movie()
 
 @pytest.fixture
@@ -120,7 +119,6 @@ def patch_movie_payload():
     """
     Генерирует случайный patch
     """
-    from utils.data_generator import DataGenerator
     return DataGenerator.generate_random_patch_data()
 
 

@@ -55,28 +55,28 @@ class TestMoviesAPI:
 class TestGetAllMoviesNegative:
     def test_invalid_page_size(self, api_manager):
         response = api_manager.movies_api.get_list_movies(
-            params={"pageSize": "abc"}, #api принимает number, а запрашиваем str
+            params={"pageSize": "abc"}, # api принимает number, а запрашиваем str
             expected_status=400
         )
         assert response.status_code == 400, f"Ожидался ответ 400, получен {response.status_code}"
 
     def test_invalid_page(self, api_manager):
         response = api_manager.movies_api.get_list_movies(
-            params={"page": "abc"}, #api принимает number, а запрашиваем str
+            params={"page": "abc"}, # api принимает number, а запрашиваем str
             expected_status=400
         )
         assert response.status_code == 400, f"Ожидался ответ 400, получен {response.status_code}"
 
     def test_invalid_min_price(self, api_manager):
         response = api_manager.movies_api.get_list_movies(
-            params={"minPrice": "abc"}, #api принимает number, а запрашиваем str
+            params={"minPrice": "abc"}, # api принимает number, а запрашиваем str
             expected_status=400
         )
         assert response.status_code == 400, f"Ожидался ответ 400, получен {response.status_code}"
 
     def test_invalid_max_price(self, api_manager):
         response = api_manager.movies_api.get_list_movies(
-            params={"maxPrice": "abc"}, #api принимает number, а запрашиваем str
+            params={"maxPrice": "abc"}, # api принимает number, а запрашиваем str
             expected_status=400
         )
         assert response.status_code == 400, f"Ожидался ответ 400, получен {response.status_code}"
@@ -90,7 +90,7 @@ class TestGetAllMoviesNegative:
 
     def test_invalid_published(self, api_manager):
         response = api_manager.movies_api.get_list_movies(
-            params={"published" : "not_bool_ha-ha"}, # api Ожидает bool, а отдаем str
+            params={"published": "not_bool_ha-ha"}, # api Ожидает bool, а отдаем str
             expected_status=200 # бэк всегда принимает 200 и я не нашел как это обойти
         )
         assert response.status_code == 200, f"Ожидался ответ 200, получен {response.status_code}"
@@ -104,7 +104,7 @@ class TestGetAllMoviesNegative:
 
     def test_invalid_created_at(self, api_manager):
         response = api_manager.movies_api.get_list_movies(
-            params={"createdAt": 1488}, #api ожидает str - asc или desc, отправляем int
+            params={"createdAt": 1488}, # api ожидает str - asc или desc, отправляем int
             expected_status=400
         )
         assert response.status_code == 400, f"Ожидался ответ 400, получен {response.status_code}"
@@ -167,8 +167,8 @@ class TestDeleteNegative:
 
 class TestPatchNegative:
     def test_patch_by_wrong_id(self, api_manager, admin_auth, patch_movie_payload):
-        patch_movie = api_manager.movies_api.patch_movie(movie_id=999777666, patch_data=patch_movie_payload, expected_status=404)
-        assert patch_movie.status_code == 404, f"Ожидался ответ 404, получен {patch_movie.status_code}"
+        patch_resp = api_manager.movies_api.patch_movie(movie_id=999777666, patch_data=patch_movie_payload, expected_status=404)
+        assert patch_resp.status_code == 404, f"Ожидался ответ 404, получен {patch_resp.status_code}"
 
     def test_patch_invalid_data(self, api_manager, admin_auth, created_movie, patch_movie_payload):
         movie_id = created_movie["id"]
